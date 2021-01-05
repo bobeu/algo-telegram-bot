@@ -31,7 +31,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 load_dotenv()
-TOKEN = os.getenv('BOT_TOKEN')  # environ.get('BOT_TOKEN')  # Token from the bot father
+TOKEN = os.getenv('TOKEN')  # environ.get('BOT_TOKEN')  # Token from the bot father
 updateAssetBalance(None, None)
 
 
