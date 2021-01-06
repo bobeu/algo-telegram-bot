@@ -47,7 +47,6 @@ reply_keyboard_category = [
     ['/Buy_DMT2', 'Get_PK', 'Account_balance'],
     ['GetMnemonic', 'Get_Alc_status', '/GetAlc'],
     ['/About', '/Help', '/Cancel', '/Main_Menu'],
-    # ['/ALTERNATIVE_IF_STUCK'],
 ]
 
 reply_alternative = [

@@ -36,6 +36,13 @@ updateAssetBalance(None, None)
 
 
 def start(update, context: CallbackContext):
+    """
+    Gives direction for use
+    Displays information about the bot and available commands
+    :param update:
+    :param context:
+    :return: None
+    """
     user = update.message.from_user
     reply = "Hi {}!\nI am ALGOMessenger.\n".format(user['first_name'])
     reply += (
@@ -58,6 +65,12 @@ def start(update, context: CallbackContext):
 
 # Returns about us
 def aboutUs(update, context):
+    """
+    Read more about Algorand and how you can build on Algorand
+    :param update:
+    :param context:
+    :return: None
+    """
     keyboard = [[
         InlineKeyboardButton("Website",
                              'https://algorand.com',
@@ -78,11 +91,24 @@ def aboutUs(update, context):
                               reply_markup=reply_markup)
 
 
+# Need help?
 def help_command(update, context):
+    """
+    Gives direction for use
+    :param update:
+    :param context:
+    :return: None
+    """
     update.message.reply_text("Use /start to test this bot.")
 
 
 def cancel(update, context):
+    """
+    Terminates a session and keeps the bot unengaged
+    :param update:
+    :param context:
+    :return: int --> Ends the session
+    """
     update.message.reply_text(f"All information is erased:", reply_markup=markup2)
     context.user_data.clear()
     start(update, context)
@@ -90,13 +116,26 @@ def cancel(update, context):
 
 
 def main():
+    """
+    The heart of the bot.
+    Keeps track of how program should run.
+    Here you specify the token gotten from the BotFather,
+    i.e the token for your bot. NB: Keep it secret.
+
+    Updater class employs the telegram.ext.Dispatcher and
+    provides a front-end to the bot for the users.
+    So, you only need to focus on backend side.
+
+    The ConversationHandler holds a conversation with a single
+     user by managing four collections of other handlers
+    :return:
+    """
     # Create the Updater and pass it your bot's token.
     pp = PicklePersistence(filename='reloroboty')
     updater = Updater(TOKEN, persistence=pp, use_context=True)
 
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
-    # Add conversation handler with the states CHOOSING, TYPING_CHOICE and TYPING_REPLY
     cul_handler = ConversationHandler(
         entry_points=[CommandHandler('Buy_DMT2', args)],
         states={

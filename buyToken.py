@@ -14,14 +14,15 @@ from telegram.ext import ConversationHandler
 import time
 
 load_dotenv()
-# startTTime = int(round(time.time() * 345600))
 price_progress = [1000, ]  # Tracks price change
 current_price = price_progress[-1]
-saleable = 6000000
+saleable = 6000000  # Total asset available for IPO.
 total_buy = 0
 assetBalance = 0
 asset_id = 13251912
 
+
+# Don't expose sensitive information.
 to = os.getenv('DEFAULT2_ACCOUNT')
 auth = os.getenv('DEFAULT2_MNEMONTIC')
 rate = 30
@@ -31,6 +32,8 @@ accountInfo = algod_client.account_info(to)
 successful = None
 
 
+# Price updater.
+# For every
 def updatePrice(update, context):
     """
     Update the price after every 2000000 token is sold
@@ -46,7 +49,6 @@ def updatePrice(update, context):
     if saleable >= 4000000:
         rate = rate
         current_price = current_price
-        print(price_progress)
         update.message.reply_text(
             "Current price per DMT2: {} MicroAlgo".format(current_price))
     elif 2000000 < saleable < 4000000:
@@ -116,7 +118,8 @@ def transfer(update, context, sender, receiver, amount):
 
     update.message.reply_text(message)
     saleable -= amount
-    # context.user_data.clear()
+    # Erase the key soon as you're done with it.
+    context.user_data.clear()
     return markup
 
 
@@ -140,6 +143,8 @@ def buy_token(update, context):
     :param context:
     :return:
     """
+    # Request to modify global variables. Peculiar to
+    # Python 3 or newer.
     global successful
     global current_price
     global price_progress
@@ -149,16 +154,21 @@ def buy_token(update, context):
     updateAssetBalance(update, context)
 
     update.message.reply_text("Broadcasting transaction...")
+
+    # Extracts the arguments from the temp_DB
     user_data = context.user_data
     buyer = user_data["Public_key"]
     qty = user_data["Quantity"]
     sk = user_data["Secret_Key"]
     note = user_data["Note"].encode()
 
+    # Firstly, opt in user if not already subscribe to DMT2 asset.
     optin(update, context, buyer, sk)
     time.sleep(3)
-    max_buy = 500000
+    max_buy = 500000  # Instant purchase pegged to 500,000 DMT2
 
+    # If there is enough token to sell
+    # Perform other necessary checks, then execute if all passed.
     if saleable > 0:
         try:
             params = algod_client.suggested_params()
@@ -213,3 +223,4 @@ def buy_token(update, context):
             update.message.reply_text("Unsuccessful")
     else:
         update.message.reply_text("Token unavailable at the moment")
+

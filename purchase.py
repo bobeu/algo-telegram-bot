@@ -28,6 +28,11 @@ user_d = {}
 
 
 def facts_to_str(user_data: Dict[str, str]) -> str:
+    """
+    Takes the user_data object, strips context into a list
+    :param user_data:
+    :return: Formated key-pair
+    """
     arg = list()
 
     for key, value in user_data.items():
@@ -37,6 +42,12 @@ def facts_to_str(user_data: Dict[str, str]) -> str:
 
 
 def args(update: Update, context: CallbackContext) -> int:
+    """
+    Entry point for taking arguments from user
+    :param update:
+    :param context:
+    :return: The next line of action.
+    """
     update.message.reply_text(
         "Enter the following information",
         reply_markup=markup2,
@@ -46,6 +57,13 @@ def args(update: Update, context: CallbackContext) -> int:
 
 
 def regular_choice(update: Update, context: CallbackContext) -> int:
+    """
+    Compares supplied information to match what we expect.
+    Passes it to DB if true.
+    :param update:
+    :param context:
+    :return: The next line of action.
+    """
     expected = ['Public_key', 'Quantity', 'Secret_Key', 'Note']
     text = update.message.text
     for b in expected:
@@ -57,6 +75,12 @@ def regular_choice(update: Update, context: CallbackContext) -> int:
 
 
 def received_information(update: Update, context: CallbackContext) -> int:
+    """
+    Displays received arguments and passed it to temp_database
+    :param update:
+    :param context:
+    :return: int (the next line of action)
+    """
     text = update.message.text
     for a in user_d:
         category = user_d[a]
@@ -83,4 +107,10 @@ def received_information(update: Update, context: CallbackContext) -> int:
 
 
 def done(update: Update, context: CallbackContext):
+    """
+    Escape-exec func
+    :param update:
+    :param context:
+    :return: Returns from buy_token()
+    """
     buy_token(update, context)

@@ -30,3 +30,44 @@ def connect(update, context):
         return algod.AlgodClient(algod_token, url, headers)
     except Exception as e:
         update.message.reply_text("Something went wrong.\nCould not connect to a node at this time.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#
+# 1321532644:AAGqn9oxTberzIY3TDgRnbMPNsrUfHgOUH8
+# TOKEN=1153325972:AAGGR338rP148klz2-dhvXm_8wJJ8sC0QI4
+# ALGODTOKEN=eVXi2wPlDE8uF15mkil5Z2FzRm20GTJg8r3R7ldv
+# DEFAULT2_ACCOUNT=HATMERJZOZ2U7Z2L7EKYHZHVNRFZOE75XN4PK5JVWVEL6M62EA4IWQZHJU
+# DEFAULT2_MNEMONTIC=vital ignore hen exact mirror cruel flee hint topic stairs check bomb milk hammer volume husband chronic wrap hub mass wool rather festival above imitate
+# URL=https://testnet-algorand.api.purestake.io/ps2

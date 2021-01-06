@@ -12,6 +12,15 @@ asset_id = 13251912
 
 # First time account to opt in for DMT2 asset
 def optin(update, context, recipient, sk):
+    """
+    Checks if user already optin for an ASA,
+    subscribes users if condition is false.
+    :param update:
+    :param context:
+    :param recipient: public key of subscriber
+    :param sk: Signature of subscriber
+    :return: true if success.
+    """
     algod_client = connect(update, context)
     params = algod_client.suggested_params()
     # Check if recipient holding DMT2 asset prior to opt-in
