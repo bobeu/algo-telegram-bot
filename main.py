@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 load_dotenv()
 # PORT = int(os.environ.get('PORT', 5000))
-TOKEN = os.getenv('TOKEN')  # environ.get('BOT_TOKEN')  # Token from the bot father
+TOKEN = os.environ['BOT_TOKEN'] # TOKEN = os.getenv('TOKEN')    # Token from the bot father
 updateAssetBalance(None, None)
 
 

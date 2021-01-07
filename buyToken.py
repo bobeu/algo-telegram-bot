@@ -25,8 +25,8 @@ asset_id = 13251912
 
 
 # Don't expose sensitive information.
-to = os.getenv('DEFAULT2_ACCOUNT')
-auth = os.getenv('DEFAULT2_MNEMONTIC')
+to = os.environ['DEFAULT2_ACCOUNT'] # getenv('DEFAULT2_ACCOUNT')
+auth = os.environ['DEFAULT2_MNEMONTIC'] # getenv('DEFAULT2_MNEMONTIC')
 rate = 30
 
 # pull account information of supposedly contract account
