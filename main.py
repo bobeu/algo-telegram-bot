@@ -199,7 +199,7 @@ def main():
     dp.add_handler(conv_handler)
 
     dp.add_handler(CommandHandler('start', start))
-    # dp.add_handler(CommandHandler('Others', inputcateg))
+    dp.add_handler(CommandHandler('Others', inputcateg))
     dp.add_handler(CommandHandler('GetAlc', create_account))
     dp.add_handler(CommandHandler('Cancel', cancel))
     dp.add_handler(CommandHandler('About', aboutUs))

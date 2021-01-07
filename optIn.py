@@ -7,6 +7,9 @@ from algosdk.future.transaction import AssetTransferTxn
 from waitforconfirmation import wait_for_confirmation
 import time
 
+from client import connect
+
+algod_client = connect(None, None)
 asset_id = 13251912
 
 

@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from waitforconfirmation import algod_client
-from getInput import markup_category, inputcateg, STARTING
+from getInput import markup_category, STARTING
+
+
+from client import connect
+
+algod_client = connect(None, None)
 
 
 def account_status(update, context):

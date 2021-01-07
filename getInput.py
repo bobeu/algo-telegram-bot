@@ -61,6 +61,15 @@ reply_keyboard_main = [
     ['/Cancel'],
 ]
 
+keyboard = [
+    ['/Get_PK', '/GetMnemonic'],
+    ['/Account_balance', '/Get_Alc_status'],
+    ['/Main_menu'],
+]
+
+mappedKeyboard = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True)
+
+
 markup_category = ReplyKeyboardMarkup(reply_keyboard_category, one_time_keyboard=True)
 markup2 = ReplyKeyboardMarkup(reply_keyboard_main, one_time_keyboard=True)
 markup3 = ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True)
@@ -186,23 +195,25 @@ def received_information_2(update, context):
     for a in user_d:
         category = user_d[a]
         if category == '/Mnemonic':
-            helper_func(update, context, category, text, markup3, "GetNow") #"Wrong Mnemonic", GETPK)
+            helper_func(update, context, category, text, markup3, "GetNow")
             return GETPK
 
         elif category == '/Private_key' and len(text) > 58:
-            helper_func(update, context, category, text, markup4, "Getnow") #"Invalid Private Key", GETMNEMONIC)
+            helper_func(update, context, category, text, markup4, "Getnow")
             return GETMNEMONIC
 
         elif category == '/Public_key' and len(text) == 58:
-            helper_func(update, context, category, text, markup5, "GetnoW") #"Invalid Public Key", ACCOUNTBAL)
+            helper_func(update, context, category, text, markup5, "GetnoW")
             return ACCOUNTBAL
 
         elif category == '/Public_Key' and len(text) == 58:
-            helper_func(update, context, category, text, markup6, "GetNoW") #"Invalid Public Key", GETALCSTAT)
+            helper_func(update, context, category, text, markup6, "GetNoW")
             return GETALCSTAT
+        else:
+            update.message.reply_text('Wrong argument is supplied', reply_markup=mappedKeyboard)
 
     user_d.clear()
-    return TYPING_REPLY_2
+    return STARTING
 
 
 # Returns to main menu

@@ -3,9 +3,9 @@
 
 from algosdk.future.transaction import transaction
 from algosdk import mnemonic
-from waitforconfirmation import wait_for_confirmation, algod_client
+from waitforconfirmation import wait_for_confirmation
 from algosdk.future.transaction import AssetTransferTxn
-from client import markup, connect
+from client import connect
 from getInput import markup2
 from optIn import optin
 import logging
@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 from telegram.ext import ConversationHandler
 import time
 
+algod_client = connect(None, None)
 load_dotenv()
 price_progress = [1000, ]  # Tracks price change
 current_price = price_progress[-1]

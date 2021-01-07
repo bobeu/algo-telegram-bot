@@ -11,13 +11,6 @@ import time
 
 algod_client = connect(None, None)
 
-keyboard = [
-    ['/Get_PK', '/GetMnemonic'],
-    ['/Account_balance', '/Get_Alc_status'],
-    ['/Main_menu'],
-]
-mappedKeyboard = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True)
-
 
 def create_account(update, context):
     """
