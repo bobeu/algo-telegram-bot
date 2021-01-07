@@ -27,6 +27,7 @@ def optin(update, context, recipient, sk):
     algod_client = connect(update, context)
     params = algod_client.suggested_params()
     # Check if recipient holding DMT2 asset prior to opt-in
+    print(algod_client.account_info(recipient))
     account_info_pk = algod_client.account_info(recipient)
     print(account_info_pk)
     holding = None

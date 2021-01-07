@@ -109,6 +109,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+reloroboty
 
 # Spyder project settings
 .spyderproject
