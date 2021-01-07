@@ -13,13 +13,17 @@ def account_status(update, context):
     :return: Address's full information
     """
     try:
-        if 'Public-Key' in context.user_data:
-            pk = context.user_data['Public-Key']
+        if '/Public_Key' in context.user_data:
+            pk = context.user_data['/Public_Key']
             status = algod_client.account_info(pk)
             for key, value in status.items():
                 update.message.reply_text("{} : {}".format(key, value), reply_markup=markup_category)
-        return STARTING
+        else:
+            update.message.reply_text("Something went wrong.\nProbably I cannot find any key.\n"
+                                      "Re /start and create an account or supply your public key "
+                                      "if you have one.")
+        # return STARTING
     except Exception as e:
-        update.message.reply_text("Something went wrong.\nProbably I cannot find any key.\n"
-                                  "Re /start and create an account or supply your public key "
-                                  "if you have one.")
+        print(e)
+
+    return STARTING

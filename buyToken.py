@@ -5,7 +5,8 @@ from algosdk.future.transaction import transaction
 from algosdk import mnemonic
 from waitforconfirmation import wait_for_confirmation, algod_client
 from algosdk.future.transaction import AssetTransferTxn
-from client import markup
+from client import markup, connect
+from getInput import markup2
 from optIn import optin
 import logging
 import os
@@ -80,7 +81,7 @@ def updateAssetBalance(update, context):
             break
 
 
-def transfer(update, context, sender, receiver, amount):
+def transfer(update, context, receiver, amount):
     """
     Transfer a custom asset from default account A to account B (Any)
     :param update: Default telegram argument
@@ -94,33 +95,37 @@ def transfer(update, context, sender, receiver, amount):
     params = algod_client.suggested_params()
     params.fee = 1000
     params.flat_fee = True
+    print(auth)
+    try:
+        assert saleable >= amount, response_end(
+            update, context, "Sales for the period is exhausted")
 
-    assert saleable >= amount, response_end(
-        update, context, "Sales for the period is exhausted")
+        txn = AssetTransferTxn(
+            sender=to,  # asset_manage_authorized,
+            sp=params,
+            receiver=receiver,
+            amt=int(amount),
+            index=asset_id
+        )
+        # Sign the transaction
+        sk = mnemonic.to_private_key(auth)
+        signedTrxn = txn.sign(sk)
 
-    txn = AssetTransferTxn(
-        sender=sender,  # asset_manage_authorized,
-        sp=params,
-        receiver=receiver,
-        amt=int(amount),
-        index=asset_id)
-    # Sign the transaction
-    sk = mnemonic.to_private_key(auth)
-    signedTrxn = txn.sign(sk)
+        # Submit transaction to the network
+        tx_id = algod_client.send_transaction(signedTrxn)
+        message = "Successful! \nTransaction hash: {}.".format(tx_id)
+        wait_for_confirmation(update, context, algod_client, tx_id)
+        logging.info(
+            "...##Asset Transfer... \nReceiving account: {}.\nMessage: {}\nOperation: {}\nTxn Hash: {}"
+            .format(receiver, message, transfer.__name__, tx_id))
 
-    # Submit transaction to the network
-    tx_id = algod_client.send_transaction(signedTrxn)
-    message = "Successful! Transaction hash: {}.".format(tx_id)
-    wait_for_confirmation(update, context, algod_client, tx_id)
-    logging.info(
-        "...##Asset Transfer... \nReceiving account: {}.\nMessage: {}\nOperation: {}\nTxn Hash: {}"
-        .format(receiver, message, transfer.__name__, tx_id))
-
-    update.message.reply_text(message)
-    saleable -= amount
-    # Erase the key soon as you're done with it.
-    context.user_data.clear()
-    return markup
+        update.message.reply_text(message, reply_markup=markup2)
+        saleable -= amount
+        # Erase the key soon as you're done with it.
+        context.user_data.clear()
+    except Exception as err:
+        print(err)
+    return markup2
 
 
 def response_end(update, context, message):
@@ -131,7 +136,7 @@ def response_end(update, context, message):
     :param message: Message to forward to user --> str
     :return:
     """
-    update.message.reply_text(message)
+    update.message.reply_text(message, reply_markup=markup2)
     return ConversationHandler.END
 
 
@@ -169,8 +174,9 @@ def buy_token(update, context):
 
     # If there is enough token to sell
     # Perform other necessary checks, then execute if all passed.
-    if saleable > 0:
-        try:
+
+    try:
+        if saleable > 0:
             params = algod_client.suggested_params()
             fee = params.fee = 1000
             flat_fee = params.flat_fee = True
@@ -212,15 +218,16 @@ def buy_token(update, context):
             if successful:
                 amountToSend = qty + (qty * (rate / 100))
                 update.message.reply_text(
-                    f"Payment success...\nTransferring {amountToSend} token to address... --> {buyer}"
+                    f"Payment success...\nTransferring {amountToSend} token to address... --> {buyer}",
+                    reply_markup=markup2
                 )
-                transfer(update, context, to, buyer, amountToSend)
+                transfer(update, context, buyer, amountToSend)
             else:
-                response_end(update, context, "Transaction was not successful")
+                response_end(update, context, "Transaction declined")
+        else:
+            update.message.reply_text("Token unavailable at the moment", reply_markup=markup2)
 
-        except Exception as err:
-            logging.info("Error encountered: ".format(err))
-            update.message.reply_text("Unsuccessful")
-    else:
-        update.message.reply_text("Token unavailable at the moment")
+    except Exception as err:
+        logging.info("Error encountered: ".format(err))
+        update.message.reply_text("Something went wrong1\nTransaction Unsuccessful", reply_markup=markup2)
 

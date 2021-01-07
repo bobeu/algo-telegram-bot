@@ -23,7 +23,7 @@ reply_keyboard1 = [
     ['/Done'],
     ['/Main_menu'],
 ]
-markup2 = ReplyKeyboardMarkup(reply_keyboard1, one_time_keyboard=True)
+markup_r = ReplyKeyboardMarkup(reply_keyboard1, one_time_keyboard=True)
 user_d = {}
 
 
@@ -49,8 +49,14 @@ def args(update: Update, context: CallbackContext) -> int:
     :return: The next line of action.
     """
     update.message.reply_text(
-        "Enter the following information",
-        reply_markup=markup2,
+        "Ready to buy DMT2?\n"
+        "Be sure you have enough fund for the transaction.\n"
+        "Initial price is 1000 microAlgo i.e 0.1 ALGO\n"
+        "Bonus is 30% for the first wave i.e 2,000,000 DMT2\n."
+        "20% for the second wave (price is 50% up) & 10% for 3rd wave (price is 50% of previous)\n\n."
+        "Let me have the following information..."
+        "click on each and paste the value.",
+        reply_markup=markup_r,
     )
 
     return CHOOSING
@@ -99,7 +105,7 @@ def received_information(update: Update, context: CallbackContext) -> int:
     update.message.reply_text(
         "I got this from you:\n"
         f"{facts_to_str(user_d)}",
-        reply_markup=markup2,
+        reply_markup=markup_r,
     )
     user_d.clear()
 

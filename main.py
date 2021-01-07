@@ -47,19 +47,20 @@ def start(update, context: CallbackContext):
     reply = "Hi {}!\nI am ALGOMessenger.\n".format(user['first_name'])
     reply += (
         " Here are what you can do with this Algobot20.\n\n"
-        "* /GetAlc - Create an account.\n"
-        "* Get Mnemonic words from Private Key.\n"
-        "* Check your account balance.\n"
-        "* Buy DMT2 Token (Algorand Standard Asset.\n"
-        "* Converts Mnemonic to Private key\n"
-        "* Check account status.\n"
-        "* Get your account public key (if you have created one with this bot.\n\n"
+        "- /GetAlc - Create an account.\n"
+        "- Get Mnemonic words from Private Key.\n"
+        "- Check your account balance.\n"
+        "- Buy DMT2 Token (Algorand Standard Asset.\n"
+        "- Converts Mnemonic to Private key\n"
+        "- Check account status.\n"
+        "- Get your account public key (if you have created one with this bot.\n\n"
         "/About - about us.\n"
         "/Help - if you need help.\n"
         "/Cancel - ends a conversation.\n\n"
-        "Navigate to /Main_menu to sub section."
+        "Use /Main_menu to navigate to the Menu.."
     )
-    update.message.reply_text(reply, reply_markup=markup)
+    update.message.reply_text(reply, reply_markup=markup2)
+    main_menu(update, context)
     context.user_data.clear()
 
 
@@ -109,8 +110,8 @@ def cancel(update, context):
     :param context:
     :return: int --> Ends the session
     """
-    update.message.reply_text(f"All information is erased:", reply_markup=markup2)
     context.user_data.clear()
+    update.message.reply_text(f"All information is erased:", reply_markup=markup_r)
     start(update, context)
     return ConversationHandler.END
 
@@ -165,29 +166,22 @@ def main():
         entry_points=[CommandHandler('Others', inputcateg)],
         states={
             STARTING: [
-                MessageHandler(Filters.regex('^(GetMnemonic|Account_balance|Get_Alc_status|Get_PK)$'),
-                               init_choice)
+                MessageHandler(Filters.regex('^(/GetMnemonic|/Account_balance|/Get_Alc_status|/Get_PK)$'),
+                               select_choice)
             ],
 
             GETPK: [
-                MessageHandler(
-                    Filters.regex('^(Mnemonic)$'), otherwise), CommandHandler('Get_PK', getPK)
+                CommandHandler('Mnemonic', otherwise), CommandHandler('GetNow', getPK)
             ],
             GETMNEMONIC: [
-                MessageHandler(
-                    Filters.regex('^(Private_key)$'), otherwise),
-                CommandHandler('GetMnemonic', get_mnemonics_from_sk)
+                CommandHandler('Private_key', otherwise), CommandHandler('Getnow', get_mnemonics_from_sk)
             ],
             ACCOUNTBAL: [
-                MessageHandler(
-                    Filters.regex('^(Public_key)$'), otherwise),
-                CommandHandler('Account_balance', query_balance)
+                CommandHandler('Public_key', otherwise), CommandHandler('GetnoW', query_balance)
             ],
 
             GETALCSTAT: [
-                MessageHandler(
-                    Filters.regex('^(Public-Key)$'), otherwise),
-                CommandHandler('Get_account_status', account_status)
+                CommandHandler('Public_Key', otherwise), CommandHandler('GetNoW', account_status)
             ],
 
             TYPING_REPLY_2: [
@@ -205,18 +199,18 @@ def main():
     dp.add_handler(conv_handler)
 
     dp.add_handler(CommandHandler('start', start))
-    dp.add_handler(CommandHandler('Others', inputcateg))
+    # dp.add_handler(CommandHandler('Others', inputcateg))
     dp.add_handler(CommandHandler('GetAlc', create_account))
     dp.add_handler(CommandHandler('Cancel', cancel))
     dp.add_handler(CommandHandler('About', aboutUs))
     dp.add_handler(CommandHandler('Help', help_command))
     dp.add_handler(CommandHandler('Main_menu', main_menu))
     dp.add_handler(CommandHandler('Get_My_Address', getAddress))
-    dp.add_handler(CommandHandler('Account_balance', inputcateg))
-    dp.add_handler(CommandHandler('Get_Alc_status', inputcateg))
-    dp.add_handler(CommandHandler('GetMnemonic', inputcateg))
-    dp.add_handler(CommandHandler('Get_PK', inputcateg))
-    dp.add_handler(CommandHandler('Others', inputcateg))
+    # dp.add_handler(CommandHandler('Account_balance', query_balance))
+    # dp.add_handler(CommandHandler('Get_Alc_status', inputcateg))
+    # dp.add_handler(CommandHandler('GetMnemonic', inputcateg))
+    # dp.add_handler(CommandHandler('Get_PK', inputcateg))
+    # dp.add_handler(CommandHandler('Others', inputcateg))
     dp.add_handler(CommandHandler('Buy_DMT2', args))
 
 

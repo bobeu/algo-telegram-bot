@@ -11,6 +11,13 @@ import time
 
 algod_client = connect(None, None)
 
+keyboard = [
+    ['/Get_PK', '/GetMnemonic'],
+    ['/Account_balance', '/Get_Alc_status'],
+    ['/Main_menu'],
+]
+mappedKeyboard = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True)
+
 
 def create_account(update, context):
     """
@@ -24,28 +31,27 @@ def create_account(update, context):
     time.sleep(1)
     try:
         sk, pk = account.generate_account()
+        mn = mnemonic.from_private_key(sk)
         if not (pk and sk is None):
-            update.message.reply_text("Account creation success.\nYour address:  {}\n"
+            update.message.reply_text("Account creation success.\nAddress:  {}\n\n"
                                       "Private Key:  {}\n\n"
-                                      "Keep your mnemonic phrase from prying eyes.\n"
+                                      "Mnemonic:\n {}\n\n"
                                       "I do not hold or manage your keys."
-                                      "".format(pk, sk)
+                                      "".format(pk, sk, mn)
                                       )
             context.user_data['default_pk'] = pk
-        else:
-            update.message.reply_text('Account creation error\n\n.')
-            # return ConversationHandler.END
         update.message.reply_text('To test if your address works fine, copy your address, and visit:\n ')
         keyboard = [[InlineKeyboardButton(
             "DISPENSER", 'https://bank.testnet.algorand.network/', callback_data='1')]]
 
-        reply_markup = InlineKeyboardMarkup(keyboard)
+        dispenser = InlineKeyboardMarkup(keyboard)
 
         update.message.reply_text('the dispenser to get some Algos\nSession ended.'
-                                  'Click /start to begin.', reply_markup=reply_markup)
+                                  'Click /start to begin.', reply_markup=dispenser)
     except Exception as e:
+        update.message.reply_text('Account creation error.')
         return e
-    return STARTING
+    # return STARTING
 
 
 # Generate mnemonic words - 25 Algorand-type seed phrase
@@ -56,18 +62,18 @@ def get_mnemonics_from_sk(update, context):
     :param update:
     :return: 25 mnemonic words
     # """
-    if 'Private_key' in context.user_data:
-        sk = context.user_data['Private_key']
+    if '/Private_key' in context.user_data:
+        sk = context.user_data['/Private_key']
         phrase = mnemonic.from_private_key(str(sk))
         update.message.reply_text(
             "Your Mnemonics:\n {}\n\nKeep your mnemonic phrase from prying eyes.\n"
-            "\nI do not hold or manage your keys.".format(phrase), reply_markup=markup_category
+            "\nI do not hold or manage your keys.".format(phrase), reply_markup=mappedKeyboard
         )
         update.message.reply_text('\nSession ended.')
-        del context.user_data['Private_key']
+        del context.user_data['/Private_key']
     else:
         update.message.reply_text("Key not found")
-        return ConversationHandler.END
+        # return ConversationHandler.END
     return STARTING
 
 
@@ -78,23 +84,24 @@ def query_balance(update, context):
     :param context:
     :return: Balance in account plus asset (s) balance
     """
-    if 'Public_key' in context.user_data:
-        pk = context.user_data['Public_key']
+    # select_choice(update, context)
+    if '/Public_key' in context.user_data:
+        pk = context.user_data['/Public_key']
         update.message.reply_text("Getting the balance on this address ==>   {}.".format(pk))
         if len(pk) == 58:
             account_bal = algod_client.account_info(pk)
             bal = account_bal['amount']
-            update.message.reply_text("Balance on your account: {}".format(bal), reply_markup=markup_category)
+            update.message.reply_text("Balance on your account: {}".format(bal), reply_markup=mappedKeyboard)
             for k in account_bal['assets']:
                 update.message.reply_text(f"Asset balance: {k['amount']}, Asset ID: {k['asset-id']}\nClick /Menu"
                                           f" to go the main menu.")
-            menuKeyboard(update, context)
+            # menuKeyboard(update, context)
         else:
             update.message.reply_text("Wrong address supplied.\nNo changes has been made.")
-            return menuKeyboard(update, context)
+            # return STARTING
     else:
-        update.message.reply_text("Cannot find public key")
-        menuKeyboard(update, context)
+        update.message.reply_text("Something went wrong")
+        # menuKeyboard(update, context)
     return STARTING
 
 
@@ -105,15 +112,15 @@ def getPK(update, context):
     :param update:
     :return: 25 mnemonic words
     # """
-    if 'Mnemonic' in context.user_data:
-        mn = context.user_data['Mnemonic']
+    if '/Mnemonic' in context.user_data:
+        mn = context.user_data['/Mnemonic']
         phrase = mnemonic.to_private_key(str(mn))
         update.message.reply_text(
             "Your Private Key:\n {}\n\nKeep your key from prying eyes.\n"
-            "\n\nI do not hold or manage your keys.".format(phrase), reply_markup=markup_category
+            "\n\nI do not hold or manage your keys.".format(phrase), reply_markup=mappedKeyboard
         )
         update.message.reply_text('\nSession ended.')
-        del context.user_data['Mnemonic']
+        del context.user_data['/Mnemonic']
     else:
         update.message.reply_text("Cannot find Mnemonic.")
         return ConversationHandler.END
@@ -123,7 +130,7 @@ def getPK(update, context):
 def getAddress(update, context):
     if 'default_pk' in context.user_data:
         addr = context.user_data['default_pk']
-        update.message.reply_text("Did you mean this? \n {}".format(addr), reply_markup=markup_category)
+        update.message.reply_text("Did you mean this? \n {}".format(addr), reply_markup=markup2)
         # return ConversationHandler.END
     else:
         update.message.reply_text(
