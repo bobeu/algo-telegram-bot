@@ -7,6 +7,7 @@ from status import account_status
 from buyToken import *
 from getInput import *
 from purchase import *
+import os
 
 from generateAccount import (
     create_account,
@@ -30,7 +31,9 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+# i = "https://git.heroku.com/stormy-meadow-03242.git"
 load_dotenv()
+PORT = int(os.environ.get('PORT', 5000))
 TOKEN = os.getenv('TOKEN')  # environ.get('BOT_TOKEN')  # Token from the bot father
 updateAssetBalance(None, None)
 
@@ -215,8 +218,9 @@ def main():
 
 
     # Start the Bot
-    updater.start_polling()
-
+    # updater.start_polling()
+    updater.start_webhook(listen="0.0.0.0", port=int(PORT), url_path=TOKEN)
+    updater.bot.setWebhook('https://stormy-meadow-03242.herokuapp.com/' + TOKEN)
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
     # start_polling() is non-blocking and will stop the bot gracefully.
