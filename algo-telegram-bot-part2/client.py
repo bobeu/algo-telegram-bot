@@ -29,10 +29,10 @@ def connect(update, context):
     try:
         return algod.AlgodClient(algod_token, url, headers)
     except Exception as e:
-        return e
+        update.message.reply_text("Something went wrong.\nCould not connect to a node at this time.")
 
 
-algod_client = connect(None, None)
+
 
 
 
