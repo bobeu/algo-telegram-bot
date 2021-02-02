@@ -6,7 +6,7 @@
 
 import logging
 from algosdk import account, mnemonic
-from client import algod_client
+from connection import algod_client
 from telegram import (ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup)
 import os
 

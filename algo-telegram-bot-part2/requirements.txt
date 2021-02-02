@@ -13,7 +13,7 @@ lxml==4.5.2
 msgpack==1.0.0
 numpy==1.19.2
 pipenv==2020.8.13
-py-algorand-sdk==1.4.0
+py-algorand-sdk==1.4.1
 pycparser==2.20
 pycryptodomex==3.9.8
 PyJWT==1.7.1
