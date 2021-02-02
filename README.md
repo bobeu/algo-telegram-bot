@@ -11,3 +11,5 @@ You should own a telegram account
 - ### Then initiate a conversation with by sending command - `/Start` 
 - ### You could also pop up the menu by simply use the `/menu` command 
 - ### Other command you may need are : `/Help` , `/Cancel` (Resets the application state removes all sensitive user information)
+
+algo-telegram-bot part 2 - https://github.com/bobeu/algo-telegram-bot/tree/main/algo-telegram-bot-tut-2
